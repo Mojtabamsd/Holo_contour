@@ -1,0 +1,5 @@
+
+
+
+
+pip install opencv-contrib-python scikit-image numpy
