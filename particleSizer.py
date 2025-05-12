@@ -1,4 +1,3 @@
-
 import os
 from pathlib import Path
 import numpy as np
@@ -81,7 +80,7 @@ def particle_sizer(code_dir, data_dir, im_format, save_dir, method_key, model_pa
             edges = structured_forest_edges(gray, model_path)
             binary = edges > 0.05
         elif method_func:
-            binary = method_func(image)
+            binary = method_func(gray)
         else:
             raise ValueError(f"Unknown method: {method_key}")
 
@@ -95,3 +94,18 @@ def particle_sizer(code_dir, data_dir, im_format, save_dir, method_key, model_pa
         props_list = reg_props(binary, name_props)
         for props in props_list:
             print(f"{img_path.name} → {props}")
+
+
+def generate_mask(img, use_convex_hull=True):
+
+    model_path = r'D:\mojmas\files\Projects\Holo_contour\model.yml'
+
+    edges = structured_forest_edges(img, model_path)
+    binary = edges > 0.05
+
+    binary = remove_small_objects(binary, min_size=50)
+
+    if use_convex_hull:
+        binary = convex_hull_image(binary)
+
+    return binary
