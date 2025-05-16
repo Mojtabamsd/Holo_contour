@@ -7,22 +7,19 @@ from skimage.draw import polygon2mask
 from particleSizer import generate_mask
 
 # --- Config ---
-# data_dir = r'D:\mojmas\files\Projects\Holo_contour\data\data1'
-data_dir = r'D:\mojmas\files\Projects\Holo_contour\data\data2'
+data_dir = r'D:\mojmas\files\Projects\Holo_contour\data\data1'
+# data_dir = r'D:\mojmas\files\Projects\Holo_contour\data\data2'
 output_dir = data_dir + r'\seg'
 os.makedirs(output_dir, exist_ok=True)
 
-gaussian_sigma = 1.2
+gaussian_sigma = 1.3
 
 
-# --- List image files only (e.g., .png or .jpg) ---
 image_files = sorted([f for f in os.listdir(data_dir) if f.endswith(('.png',))])
 
-# --- Process each image ---
 for i, img_name in enumerate(image_files):
     print(f"[{i}] Processing {img_name}...")
 
-    # Load image
     image_path = os.path.join(data_dir, img_name)
     image = io.imread(image_path)
     image = image[:, :, 0]
@@ -34,20 +31,16 @@ for i, img_name in enumerate(image_files):
     else:
         image_gray = image
 
-    # Generate initial mask using your function
     initial_mask = generate_mask(image_gray) > 0
 
-    # Extract initial contour
     contours = measure.find_contours(initial_mask.astype(float), 0.5)
     if not contours:
         print(f"  Skipping {img_name} (no contours found).")
         continue
     init_snake = max(contours, key=len)
 
-    # Smooth image for contour refinement
     image_smooth = filters.gaussian(image_gray, sigma=gaussian_sigma)
 
-    # Apply active contour (snake)
     snake = active_contour(
         image_smooth,
         init_snake,
@@ -56,10 +49,8 @@ for i, img_name in enumerate(image_files):
         gamma=0.001,
     )
 
-    # Generate refined mask from snake
     refined_mask = polygon2mask(image.shape[:2], snake)
 
-    # --- Plot result ---
     fig, ax = plt.subplots()
     ax.imshow(image, cmap='gray')
     ax.plot(init_snake[:, 1], init_snake[:, 0], '--r', label='Initial')
