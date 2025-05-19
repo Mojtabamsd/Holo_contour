@@ -7,7 +7,7 @@ particle_sizer(
     im_format='.png',
     save_dir=r'D:\mojmas\files\Projects\Holo_contour',
     method_key='structuredForest',  # or 'structuredForest', 'cannyEdge', 'sobelEdge'
-    model_path=r'D:\mojmas\files\Projects\Holo_contour\model.yml',
+    model_path=r'D:\mojmas\files\Projects\Holo_contour\model\model.yml',
     # name_props=['Area', 'BoundingBox', 'ConvexArea', 'MajorAxisLength', 'MinorAxisLength'],
     name_props=['Area', 'BoundingBox'],
     use_convex_hull=True

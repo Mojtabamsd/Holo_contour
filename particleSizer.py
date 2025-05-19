@@ -96,7 +96,7 @@ def particle_sizer(code_dir, data_dir, im_format, save_dir, method_key, model_pa
             print(f"{img_path.name} → {props}")
 
 
-def generate_mask(img, use_convex_hull=True):
+def generate_mask(img, use_convex_hull=False):
 
     model_path = r'model\model.yml'
 

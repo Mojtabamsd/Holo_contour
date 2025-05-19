@@ -7,8 +7,8 @@ from skimage.draw import polygon2mask
 from particleSizer import generate_mask
 
 # --- Config ---
-data_dir = r'D:\mojmas\files\Projects\Holo_contour\data\data1'
-# data_dir = r'D:\mojmas\files\Projects\Holo_contour\data\data2'
+# data_dir = r'D:\mojmas\files\Projects\Holo_contour\data\data1'
+data_dir = r'D:\mojmas\files\Projects\Holo_contour\data\data2'
 output_dir = data_dir + r'\seg'
 os.makedirs(output_dir, exist_ok=True)
 

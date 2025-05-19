@@ -125,10 +125,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
 
-    # args.folder = r'D:\mojmas\files\Projects\Holo_contour\data\data1'
-    args.folder = r'D:\mojmas\files\Projects\Holo_contour\data\data2'
+    args.folder = r'D:\mojmas\files\Projects\Holo_contour\data\data1'
+    # args.folder = r'D:\mojmas\files\Projects\Holo_contour\data\data2'
     args.model = "vit_l"
-    # args.threshold = 95
-    args.threshold = 70
+    args.threshold = 95
+    # args.threshold = 70
 
     run_sam_on_folder(args.folder, args.model, args.threshold)
