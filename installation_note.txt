@@ -3,3 +3,5 @@
 
 
 pip install opencv-contrib-python scikit-image numpy matplotlib
+
+pip install -U git+https://github.com/morphocut/morphocut.git
