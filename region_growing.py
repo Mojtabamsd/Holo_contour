@@ -64,7 +64,7 @@ def contour_to_mask(img, contour):
     return mask
 
 
-def holo_contour(img_org, avg_thresh=81, min_contour_area=30, seed_thresh=45):
+def holo_contour(img_org, avg_thresh=81, min_contour_area=30, seed_thresh=45, plot=False):
     
     img = img_org
     # # histogram matching to reference
@@ -138,8 +138,9 @@ def holo_contour(img_org, avg_thresh=81, min_contour_area=30, seed_thresh=45):
         # plt.show()
         filtered_contours += new_filtered_contours
 
-    fig, ax = plt.subplots(figsize=(8, 8))
-    ax.imshow(img_org, cmap='gray')
+    if plot:
+        fig, ax = plt.subplots(figsize=(8, 8))
+        ax.imshow(img_org, cmap='gray')
 
     # Remove contours based on average mean intensity threshold
     filtered_merged_contours = []
@@ -174,8 +175,9 @@ def holo_contour(img_org, avg_thresh=81, min_contour_area=30, seed_thresh=45):
     mask[rr, cc] = 1
     union_area = union_area * mask
     # union_area = mask
-    ax.plot(contour[:, 1], contour[:, 0], '--r', label='Initial')
-    # plt.show()
+    if plot:
+        ax.plot(contour[:, 1], contour[:, 0], '--r', label='Initial')
+        # plt.show()
 
     merged_contours = measure.find_contours(union_area, 0.5)
     # contours = measure.find_contours(segmentation_mask, 0.5)
@@ -183,14 +185,16 @@ def holo_contour(img_org, avg_thresh=81, min_contour_area=30, seed_thresh=45):
 
     final_mask = np.zeros_like(init_mask, dtype=np.uint8)
     for merged_contour in merged_contours:
-        ax.plot(merged_contour[:, 1], merged_contour[:, 0], '-b', linewidth=2, label='Refined')
+        if plot:
+            ax.plot(merged_contour[:, 1], merged_contour[:, 0], '-b', linewidth=2, label='Refined')
         final_mask += contour_to_mask(img, merged_contour)
 
-    ax.set_title('Final Segmentation Result')
-    ax.legend()
-    plt.tight_layout()
-    # plt.savefig(output_path)
-    plt.show()
+    if plot:
+        ax.set_title('Final Segmentation Result')
+        ax.legend()
+        plt.tight_layout()
+        # plt.savefig(output_path)
+        plt.show()
  
     return final_mask
 
