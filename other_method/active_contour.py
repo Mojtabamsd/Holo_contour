@@ -1,14 +1,13 @@
 import os
-import numpy as np
 import matplotlib.pyplot as plt
-from skimage import io, color, filters, measure, img_as_ubyte
+from skimage import io, color, filters, measure
 from skimage.segmentation import active_contour
 from skimage.draw import polygon2mask
-from particleSizer import generate_mask
+from image.structure_forest import generate_mask
 
 # --- Config ---
 # data_dir = r'D:\mojmas\files\Projects\Holo_contour\data\data1'
-data_dir = r'D:\mojmas\files\Projects\Holo_contour\data\data2'
+data_dir = r'/data/data2'
 output_dir = data_dir + r'\seg'
 os.makedirs(output_dir, exist_ok=True)
 

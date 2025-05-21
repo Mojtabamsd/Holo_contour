@@ -1,96 +1,15 @@
-import os
 from pathlib import Path
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from skimage import measure
-from skimage.draw import polygon, polygon2mask
+from skimage.draw import polygon2mask
 from skimage.exposure import match_histograms
-from particleSizer import generate_mask
-
-
-def normalize(mask, range_val=255):
-    """Normalize an image to a given range."""
-    return (range_val * (mask - np.min(mask)) / np.ptp(mask)).astype(np.uint8)
-
-
-def find_darkest_point(image, mask):
-    """Find the darkest pixel within a mask."""
-    return np.unravel_index(np.argmin(image[mask]), image.shape)
-
-
-def region_grow(image, seed, max_iter=20000, tolerance=25):
-    """Simple region growing algorithm from a seed."""
-    mask = np.zeros_like(image, dtype=bool)
-    region_mean = image[seed]
-    stack = [seed]
-    iter_count = 0
-
-    while stack and iter_count < max_iter:
-        x, y = stack.pop()
-        if not mask[x, y]:
-            mask[x, y] = True
-            for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-                nx, ny = x + dx, y + dy
-                if (
-                    0 <= nx < image.shape[0] and
-                    0 <= ny < image.shape[1] and
-                    not mask[nx, ny] and
-                    abs(image[nx, ny] - region_mean) < tolerance
-                ):
-                    stack.append((nx, ny))
-        iter_count += 1
-
-    return mask
-
-
-def apply_histogram_matching(img, ref_path):
-    """Match histogram of image to reference."""
-    ref = cv2.imread(ref_path, 0)
-    matched = match_histograms(img, ref)
-    matched = np.clip(matched, img.min(), img.max())
-    return matched.astype(img.dtype)
-
-
-def contour_mask_union(contours, shape):
-    """Create a union mask from multiple contours."""
-    union_mask = np.zeros(shape, dtype=bool)
-    for contour in contours:
-        union_mask |= measure.grid_points_in_poly(shape, contour)
-    return union_mask
-
-
-def filter_contours_by_intensity(contours, image, threshold, use_median=False):
-    """Filter contours by intensity threshold."""
-    filtered = []
-    for contour in contours:
-        req_mask = polygon2mask(image.shape[:2], contour).astype(bool)
-        region_values = image[req_mask]
-        stat = np.median(region_values) if use_median else np.mean(region_values)
-
-        # contour_coords = np.array(list(zip(contour[:, 0].astype(int), contour[:, 1].astype(int))))
-        # stat = np.mean(image[contour_coords[:, 0], contour_coords[:, 1]])
-
-        if stat <= threshold:
-            filtered.append(contour)
-    return filtered
-
-
-def plot_segmentation_result(img_org, initial_contour, refined_contours, title="Final Segmentation Result"):
-    """Plot the initial and refined contours on the original image."""
-    fig, ax = plt.subplots(figsize=(8, 8))
-    ax.imshow(img_org, cmap='gray')
-
-    if initial_contour is not None:
-        ax.plot(initial_contour[:, 1], initial_contour[:, 0], '--r', label='Initial')
-
-    for contour in refined_contours:
-        ax.plot(contour[:, 1], contour[:, 0], '-b', linewidth=2, label='Refined')
-
-    ax.set_title(title)
-    ax.legend()
-    plt.tight_layout()
-    plt.show()
+from image.structure_forest import generate_mask
+from image.contour import contour_mask_union, filter_contours_by_intensity
+from image.visual import plot_segmentation_result
+from image.region_growing import region_grow
+from image.processing import normalize, apply_histogram_matching, find_darkest_point
 
 
 def holo_contour(img_org,
