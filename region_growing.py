@@ -16,7 +16,7 @@ def holo_contour(img_org,
                  avg_thresh=81,
                  min_contour_area=30,
                  seed_thresh=45,
-                 plot=False,
+                 save_plot=False,
                  median=False,
                  hist_match=False,
                  ref_path=None):
@@ -62,10 +62,12 @@ def holo_contour(img_org,
             final_mask += mask
             final_contour.append(contour)
 
-    if plot:
-        plot_segmentation_result(img_org, outer, final_contour)
+    if save_plot:
+        plot = plot_segmentation_result(img_org, outer, final_contour)
+    else:
+        plot = None
 
-    return final_mask > 0
+    return final_mask > 0, plot
 
 
 
@@ -84,12 +86,12 @@ if __name__ == '__main__':
 
     for file in root.glob('*.png'):
         img = cv2.imread(str(file), 0)
-        mask = holo_contour(
+        mask, plot = holo_contour(
             img,
             avg_thresh=avg_thresh,
             min_contour_area=min_area,
             seed_thresh=seed_thresh,
-            plot=True,
+            save_plot=True,
             median=use_median,
             hist_match=hist_match,
             ref_path=ref_path
@@ -98,3 +100,7 @@ if __name__ == '__main__':
         output_path = output_dir / (file.stem + ".out.png")
         cv2.imwrite(str(output_path), (mask * 255).astype(np.uint8))
         print(f"Saved: {output_path}")
+
+        output_path_plot = output_dir / (file.stem + ".plot.png")
+        cv2.imwrite(str(output_path_plot), plot)
+        print(f"Saved: {output_path_plot}")

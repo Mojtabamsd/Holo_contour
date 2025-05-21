@@ -28,7 +28,8 @@ def process_to_ecotaxa(
         lat, lon, date (optional): Metadata for EcoTaxa.
         ext (str): File extension filter (default: ".png").
     """
-    output_dir = os.path.join(os.path.dirname(input_folder), "morphocut")
+    # output_dir = os.path.join(os.path.dirname(input_folder), "output")
+    output_dir = os.path.join(os.path.join(input_folder), "output")
     os.makedirs(output_dir, exist_ok=True)
 
     print(f"Selected folder: {input_folder}")
@@ -48,8 +49,9 @@ def process_to_ecotaxa(
 
         img = ImageReader(path)
         img_gray = img[:, :, 0]
+        # img_gray = img
 
-        mask = HoloContourNode(img_gray, contour_params=contour_params)
+        mask, plot = HoloContourNode(img_gray, contour_params=contour_params)
 
         region_props = ImageProperties(mask, img_gray)
 
@@ -65,23 +67,39 @@ def process_to_ecotaxa(
             object_meta=object_meta,
         )
 
+        output_zip_mask = os.path.join(output_dir, f"EcoTaxa_{output_name}_mask.zip")
+        EcotaxaWriter(
+            output_zip_mask,
+            [(Format("{object_id}.jpg", object_id=basename), mask)],
+            object_meta=object_meta,
+        )
+
+        if holo_params["save_plot"]:
+            output_zip_plot = os.path.join(output_dir, f"EcoTaxa_{output_name}_plot.zip")
+            EcotaxaWriter(
+                output_zip_plot,
+                [(Format("{object_id}.jpg", object_id=basename), plot)],
+                object_meta=object_meta,
+            )
+
         Progress(fn)
 
     pipeline.run()
 
 
-
 if __name__ == '__main__':
     holo_params = {
-        "avg_thresh": 81,
+        "avg_thresh": 63,
         "min_contour_area": 30,
         "seed_thresh": 45,
-        "plot": False,
-        "median": True
+        "save_plot": False,
+        "median": False,
+        "hist_match": False,
+        "ref_path": None,
     }
 
     process_to_ecotaxa(
         input_folder=r'D:\mojmas\files\Projects\Holo_contour\data\data2',
-        output_name='test',
+        output_name='sample',
         contour_params=holo_params
     )
