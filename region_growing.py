@@ -1,231 +1,181 @@
+import os
 from pathlib import Path
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from skimage import measure
-from particleSizer import generate_mask
+from skimage.draw import polygon, polygon2mask
 from skimage.exposure import match_histograms
-from skimage.draw import polygon
-import os
-
-def normalize(mask, range=255):
-    normalized = (range * (mask - np.min(mask)) / np.ptp(mask)).astype(int).astype('uint8')
-    return normalized
+from particleSizer import generate_mask
 
 
-def find_min_point_inside(image, mask):
-    min_point = np.unravel_index(np.argmin(image[mask]), image.shape)
-    return min_point
+def normalize(mask, range_val=255):
+    """Normalize an image to a given range."""
+    return (range_val * (mask - np.min(mask)) / np.ptp(mask)).astype(np.uint8)
 
 
-def region_growing(image, seed, max_iterations=20000):
-    mask = np.zeros_like(image, dtype=np.bool)
+def find_darkest_point(image, mask):
+    """Find the darkest pixel within a mask."""
+    return np.unravel_index(np.argmin(image[mask]), image.shape)
+
+
+def region_grow(image, seed, max_iter=20000, tolerance=25):
+    """Simple region growing algorithm from a seed."""
+    mask = np.zeros_like(image, dtype=bool)
     region_mean = image[seed]
-    tolerance = 25  # Adjust this threshold based on your image characteristics
-    iterations = 0
-
     stack = [seed]
+    iter_count = 0
 
-    while stack and iterations < max_iterations:
-        current = stack.pop()
-
-        if not mask[current]:
-            mask[current] = True
-
-            # Get neighboring pixels
-            neighbors = [
-                (current[0] + 1, current[1]),
-                (current[0] - 1, current[1]),
-                (current[0], current[1] + 1),
-                (current[0], current[1] - 1),
-            ]
-
-            for neighbor in neighbors:
-                # Check if the neighbor is within the image boundaries
+    while stack and iter_count < max_iter:
+        x, y = stack.pop()
+        if not mask[x, y]:
+            mask[x, y] = True
+            for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                nx, ny = x + dx, y + dy
                 if (
-                        0 <= neighbor[0] < image.shape[0]
-                        and 0 <= neighbor[1] < image.shape[1]
-                        and not mask[neighbor]
-                        and np.abs(image[neighbor] - region_mean) < tolerance
+                    0 <= nx < image.shape[0] and
+                    0 <= ny < image.shape[1] and
+                    not mask[nx, ny] and
+                    abs(image[nx, ny] - region_mean) < tolerance
                 ):
-                    stack.append(neighbor)
-
-        iterations += 1
+                    stack.append((nx, ny))
+        iter_count += 1
 
     return mask
 
 
-def contour_to_mask(img, contour):
-    r = contour[:, 0]
-    c = contour[:, 1]
-    mask = np.zeros_like(img, dtype=np.uint8)
-    rr, cc = polygon(r, c, shape=mask.shape)
-    mask[rr, cc] = 1
-    return mask
-
-
-def holo_contour(img_org, avg_thresh=81, min_contour_area=30, seed_thresh=45, plot=False):
-    
-    img = img_org
-    # # histogram matching to reference
-    # ref_path = r'D:\mojmas\files\Projects\Holo_contour\data\data2\001-1524.pgm(1,312)-Z35.00.png'
-    ref_path = r'D:\mojmas\files\Projects\Holo_contour\data\data2\001-4923.pgm(406,428)-Z43.50.png'
+def apply_histogram_matching(img, ref_path):
+    """Match histogram of image to reference."""
     ref = cv2.imread(ref_path, 0)
-    matched = match_histograms(img_org, ref)
-    matched = np.clip(matched, img_org.min(), img_org.max())
-    matched = matched.astype(img_org.dtype)
-    # img = matched  # for dataset 1 only
+    matched = match_histograms(img, ref)
+    matched = np.clip(matched, img.min(), img.max())
+    return matched.astype(img.dtype)
 
-    img_blur = cv2.medianBlur(img, 5)
-    img = img_blur
 
-    # gray_image = cv2.GaussianBlur(gray_image, (5, 5), 0)
+def contour_mask_union(contours, shape):
+    """Create a union mask from multiple contours."""
+    union_mask = np.zeros(shape, dtype=bool)
+    for contour in contours:
+        union_mask |= measure.grid_points_in_poly(shape, contour)
+    return union_mask
 
-    # # Get the initial seed point from the user
-    # fig, ax = plt.subplots(figsize=(8, 8))
-    # ax.imshow(gray_image, cmap='gray')
-    # ax.set_title('Click to provide a seed point for region growing')
 
-    # seed_point = plt.ginput(1, show_clicks=True)[0]
-    # seed_point = (int(seed_point[1]), int(seed_point[0]))
+def filter_contours_by_intensity(contours, image, threshold, use_median=False):
+    """Filter contours by intensity threshold."""
+    filtered = []
+    for contour in contours:
+        req_mask = polygon2mask(image.shape[:2], contour).astype(bool)
+        region_values = image[req_mask]
+        stat = np.median(region_values) if use_median else np.mean(region_values)
 
+        # contour_coords = np.array(list(zip(contour[:, 0].astype(int), contour[:, 1].astype(int))))
+        # stat = np.mean(image[contour_coords[:, 0], contour_coords[:, 1]])
+
+        if stat <= threshold:
+            filtered.append(contour)
+    return filtered
+
+
+def plot_segmentation_result(img_org, initial_contour, refined_contours, title="Final Segmentation Result"):
+    """Plot the initial and refined contours on the original image."""
+    fig, ax = plt.subplots(figsize=(8, 8))
+    ax.imshow(img_org, cmap='gray')
+
+    if initial_contour is not None:
+        ax.plot(initial_contour[:, 1], initial_contour[:, 0], '--r', label='Initial')
+
+    for contour in refined_contours:
+        ax.plot(contour[:, 1], contour[:, 0], '-b', linewidth=2, label='Refined')
+
+    ax.set_title(title)
+    ax.legend()
+    plt.tight_layout()
+    plt.show()
+
+
+def holo_contour(img_org,
+                 avg_thresh=81,
+                 min_contour_area=30,
+                 seed_thresh=45,
+                 plot=False,
+                 median=False,
+                 hist_match=False,
+                 ref_path=None):
+
+    img = img_org.copy()
+
+    if hist_match and ref_path:
+        img = apply_histogram_matching(img_org, ref_path)
+
+    img = cv2.medianBlur(img, 5)
     init_mask = generate_mask(img)
 
-    # seed_point = find_min_point_inside(gray_image, gray_image > 0)
-    seed_point = find_min_point_inside(img_org, init_mask > 0)
-    seed_point = (seed_point[0], seed_point[1])
+    seed = find_darkest_point(img_org, init_mask > 0)
+    seg_mask = region_grow(img, seed)
 
-    segmentation_mask = region_growing(img, seed_point)
-
-    contours = measure.find_contours(segmentation_mask, 0.5)
-
-    # Filter out small contours based on area
-    filtered_contours = [contour for contour in contours if contour.shape[0] > min_contour_area]
-
-    # # Display the original image and the segmented image with the filtered contour
-    # fig, ax = plt.subplots(figsize=(8, 8))
-    # ax.imshow(gray_image, cmap='gray')
-    #
-    # for contour in filtered_contours:
-    #     ax.plot(contour[:, 1], contour[:, 0], '-r', linewidth=2)
-    #
-    # ax.set_title('Region Growing Contour Segmentation (Filtered)')
-    # plt.show()
+    contours = measure.find_contours(seg_mask, 0.5)
+    filtered_contours = [c for c in contours if len(c) > min_contour_area]
 
     while True:
-        outside_points = np.where((img < seed_thresh) & ~segmentation_mask)
+        outside = np.where((img < seed_thresh) & ~seg_mask)
+        if len(outside[0]) == 0:
+            break
+        seed = (outside[0][0], outside[1][0])
+        new_mask = region_grow(img, seed)
+        seg_mask |= new_mask
+        new_contours = measure.find_contours(new_mask, 0.5)
+        filtered_contours += [c for c in new_contours if len(c) > min_contour_area]
 
-        if len(outside_points[0]) == 0:
-            break  # No more points below the threshold outside detected contours
+    valid_contours = filter_contours_by_intensity(
+        filtered_contours, img_org, avg_thresh, median
+    )
 
-        seed_point = (outside_points[0][0], outside_points[1][0])
-
-        new_segmentation_mask = region_growing(img, seed_point)
-
-        segmentation_mask |= new_segmentation_mask
-
-        new_contours = measure.find_contours(new_segmentation_mask, 0.5)
-
-        new_filtered_contours = [contour for contour in new_contours if contour.shape[0] > min_contour_area]
-
-        # fig, ax = plt.subplots(figsize=(8, 8))
-        # ax.imshow(gray_image, cmap='gray')
-        #
-        # for contour in filtered_contours + new_filtered_contours:
-        #     ax.plot(contour[:, 1], contour[:, 0], '-r', linewidth=2)
-        #
-        # ax.set_title('Region Growing Contour Segmentation (Filtered + Iterative)')
-        # plt.show()
-        filtered_contours += new_filtered_contours
-
-    if plot:
-        fig, ax = plt.subplots(figsize=(8, 8))
-        ax.imshow(img_org, cmap='gray')
-
-    # Remove contours based on average mean intensity threshold
-    filtered_merged_contours = []
-
-    for filtered_contour in filtered_contours:
-        req_mask = contour_to_mask(img, filtered_contour)
-
-        if median:
-            region_pixels = img_org[req_mask > 0]
-            region_median = np.median(region_pixels)
-            region_mean = region_median
-        else:
-            # region_mean = np.mean(img_org*req_mask)
-            contour_coords = np.array(
-                list(zip(filtered_contour[:, 0].astype(int), filtered_contour[:, 1].astype(int))))
-            region_mean = np.mean(img[contour_coords[:, 0], contour_coords[:, 1]])
-
-        if region_mean <= avg_thresh:
-            filtered_merged_contours.append(filtered_contour)
-
-    union_area = np.zeros_like(segmentation_mask, dtype=np.bool)
-    for contour in filtered_merged_contours:
-        union_area |= measure.grid_points_in_poly(segmentation_mask.shape, contour)
-
-    # remove areas outside of mask
-    contours = measure.find_contours(init_mask, 0.5)
-    contour = max(contours, key=len)
-    r = contour[:, 0]
-    c = contour[:, 1]
-    mask = np.zeros_like(init_mask, dtype=np.uint8)
-    rr, cc = polygon(r, c, shape=mask.shape)
-    mask[rr, cc] = 1
-    union_area = union_area * mask
-    # union_area = mask
-    if plot:
-        ax.plot(contour[:, 1], contour[:, 0], '--r', label='Initial')
-        # plt.show()
-
-    merged_contours = measure.find_contours(union_area, 0.5)
-    # contours = measure.find_contours(segmentation_mask, 0.5)
-    merged_contours = [contour for contour in merged_contours if contour.shape[0] > min_contour_area]
+    union = contour_mask_union(valid_contours, img_org.shape)
+    outer = max(measure.find_contours(init_mask, 0.5), key=len)
+    init_mask_poly = polygon2mask(img_org.shape[:2], outer)
+    union &= init_mask_poly
 
     final_mask = np.zeros_like(init_mask, dtype=np.uint8)
-    for merged_contour in merged_contours:
-        if plot:
-            ax.plot(merged_contour[:, 1], merged_contour[:, 0], '-b', linewidth=2, label='Refined')
-        final_mask += contour_to_mask(img, merged_contour)
+    final_contour = []
+    for contour in measure.find_contours(union, 0.5):
+        if len(contour) > min_contour_area:
+            mask = polygon2mask(img_org.shape[:2], contour).astype(np.uint8)
+            final_mask += mask
+            final_contour.append(contour)
 
     if plot:
-        ax.set_title('Final Segmentation Result')
-        ax.legend()
-        plt.tight_layout()
-        # plt.savefig(output_path)
-        plt.show()
- 
-    return final_mask
+        plot_segmentation_result(img_org, outer, final_contour)
+
+    return final_mask > 0
 
 
 
+if __name__ == '__main__':
+    root = Path(r'D:\mojmas\files\Projects\Holo_contour\data\data2')
+    output_dir = root / 'seg'
+    output_dir.mkdir(exist_ok=True)
 
-# root = r'D:\mojmas\files\Projects\Holo_contour\data\data1'
-root = r'D:\mojmas\files\Projects\Holo_contour\data\data2'
-# root = r'D:\mojmas\files\Projects\Holo_contour\data\data3'
-median = False
+    use_median = False
+    hist_match = False
+    ref_path = r'D:\mojmas\files\Projects\Holo_contour\data\data2\001-4923.pgm(406,428)-Z43.50.png'
 
-if median:
-    avg_thresh = 100    # average median intensity threshold data1
-    # avg_thresh = 67    # average median intensity threshold data2
-else:
-    # avg_thresh = 85    # average mean intensity threshold data1
-    avg_thresh = 81    # average mean intensity threshold data2
+    avg_thresh = 100 if use_median else 63
+    min_area = 30
+    seed_thresh = 45
 
+    for file in root.glob('*.png'):
+        img = cv2.imread(str(file), 0)
+        mask = holo_contour(
+            img,
+            avg_thresh=avg_thresh,
+            min_contour_area=min_area,
+            seed_thresh=seed_thresh,
+            plot=True,
+            median=use_median,
+            hist_match=hist_match,
+            ref_path=ref_path
+        )
 
-min_contour_area = 30           # small contours minimum area
-seed_thresh = 45      # for second contour it searches values below this thresh
-
-
-for file in Path(root).glob('*.png'):
-    input_path = str(file)
-    output_path = str(file.parent / 'seg' / (file.stem + ".out.png"))
-    img_org = cv2.imread(input_path, 0)
-    
-    mask = holo_contour(img_org, avg_thresh, min_contour_area, seed_thresh)
-
-    mask = (mask * 255)
-    cv2.imwrite(output_path, mask)
-    print(f"  Saved refined mask: {output_path}")
-
+        output_path = output_dir / (file.stem + ".out.png")
+        cv2.imwrite(str(output_path), (mask * 255).astype(np.uint8))
+        print(f"Saved: {output_path}")
