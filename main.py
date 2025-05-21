@@ -1,7 +1,7 @@
 import os
 from morphocut.core import Pipeline, Call
 from morphocut.file import Find, Glob
-from morphocut.image import ImageProperties, ImageReader
+from morphocut.image import ImageProperties, ImageReader, FindRegions
 from morphocut.stream import Progress
 from morphocut.str import Format
 from morphocut.contrib.ecotaxa import EcotaxaWriter
@@ -52,6 +52,10 @@ def process_to_ecotaxa(
         mask = HoloContourNode(img_gray, contour_params=contour_params)
 
         region_props = ImageProperties(mask, img_gray)
+
+        # to handle multiple objects
+        # region_props = FindRegions(mask, img_gray, min_area=30)
+
         object_meta = CalculateZooProcessFeatures(region_props, metadata)
 
         output_zip = os.path.join(output_dir, f"EcoTaxa_{output_name}.zip")
@@ -77,7 +81,7 @@ if __name__ == '__main__':
     }
 
     process_to_ecotaxa(
-        input_folder=r'D:\mojmas\files\Projects\Holo_contour\data\data1',
+        input_folder=r'D:\mojmas\files\Projects\Holo_contour\data\data2',
         output_name='test',
         contour_params=holo_params
     )
