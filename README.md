@@ -1,14 +1,14 @@
+cha
 <p align="left">
-  <img src="assets/logo.png" alt="HoloContour Logo" width="100"/> 
+  <img src="assets/logo.png" alt="HoloContour" width="200"/>
 </p>
-
-A minimalist tool for processing holographic plankton images and extracting refined contour-based segmentations.
+<p align="left">A minimalist tool for holographic plankton image segmentation</p>
 
 
 
 # HoloContour
 
-This project provides a pipeline for segmenting holographic particle images using a hybrid region-growing and contour refinement method. It integrates with the [MorphoCut](https://github.com/morphocut/morphocut) framework and exports outputs compatible with [EcoTaxa](https://ecotaxa.obs-vlfr.fr/).
+This repository provides a pipeline for segmenting holographic particle images using a hybrid region-growing and contour refinement method. It integrates with the [MorphoCut](https://github.com/morphocut/morphocut) framework and exports outputs compatible with [EcoTaxa](https://ecotaxa.obs-vlfr.fr/).
 
 ---
 
