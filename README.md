@@ -1,6 +1,5 @@
-cha
 <p align="left">
-  <img src="assets/logo.png" alt="HoloContour" width="200"/>
+  <img src="assets/logo.png" alt="HoloContour" width="100"/>
 </p>
 <p align="left">A minimalist tool for holographic plankton image segmentation</p>
 
