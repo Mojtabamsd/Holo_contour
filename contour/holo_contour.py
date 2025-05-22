@@ -68,39 +68,3 @@ def holo_contour(img_org,
         plot = None
 
     return final_mask > 0, plot
-
-
-
-if __name__ == '__main__':
-    root = Path(r'D:\mojmas\files\Projects\Holo_contour\data\data2')
-    output_dir = root / 'seg'
-    output_dir.mkdir(exist_ok=True)
-
-    use_median = False
-    hist_match = False
-    ref_path = r'D:\mojmas\files\Projects\Holo_contour\data\data2\001-4923.pgm(406,428)-Z43.50.png'
-
-    avg_thresh = 100 if use_median else 63
-    min_area = 30
-    seed_thresh = 45
-
-    for file in root.glob('*.png'):
-        img = cv2.imread(str(file), 0)
-        mask, plot = holo_contour(
-            img,
-            avg_thresh=avg_thresh,
-            min_contour_area=min_area,
-            seed_thresh=seed_thresh,
-            save_plot=True,
-            median=use_median,
-            hist_match=hist_match,
-            ref_path=ref_path
-        )
-
-        output_path = output_dir / (file.stem + ".out.png")
-        cv2.imwrite(str(output_path), (mask * 255).astype(np.uint8))
-        print(f"Saved: {output_path}")
-
-        output_path_plot = output_dir / (file.stem + ".plot.png")
-        cv2.imwrite(str(output_path_plot), plot)
-        print(f"Saved: {output_path_plot}")
