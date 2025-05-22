@@ -2,6 +2,7 @@ import os
 from morphocut.core import Pipeline, Call
 from morphocut.file import Find, Glob
 from morphocut.image import ImageReader, ImageProperties
+from image.safe_image_properties import SafeImageProperties
 from morphocut.stream import Progress
 from morphocut.str import Format
 from morphocut.contrib.ecotaxa import EcotaxaWriter
@@ -37,7 +38,7 @@ def process_to_ecotaxa(input_folder, output_name, contour_params, lat=None, lon=
 
         mask, plot = HoloContourNode(img_gray, contour_params=contour_params)
 
-        region_props = ImageProperties(mask, img_gray)
+        region_props = SafeImageProperties(mask, img_gray)
 
         # to handle multiple objects
         # region_props = FindRegions(mask, img_gray, min_area=30)
