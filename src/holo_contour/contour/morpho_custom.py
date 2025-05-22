@@ -1,5 +1,5 @@
 from morphocut import Node, Output, ReturnOutputs
-from src.contour.holo_contour import holo_contour
+from src.holo_contour.contour.holo_contour import holo_contour
 
 @ReturnOutputs
 class HoloContourNode(Node):

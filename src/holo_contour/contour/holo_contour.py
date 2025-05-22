@@ -2,11 +2,11 @@ import cv2
 import numpy as np
 from skimage import measure
 from skimage.draw import polygon2mask
-from src.image.structure_forest import generate_mask
-from src.image.contour import contour_mask_union, filter_contours_by_intensity
-from src.image.visual import plot_segmentation_result
-from src.image.region_growing import region_grow
-from src.image.processing import apply_histogram_matching, find_darkest_point
+from src.holo_contour.image.structure_forest import generate_mask
+from src.holo_contour.image.contour import contour_mask_union, filter_contours_by_intensity
+from src.holo_contour.image.visual import plot_segmentation_result
+from src.holo_contour.image.region_growing import region_grow
+from src.holo_contour.image.processing import apply_histogram_matching, find_darkest_point
 
 
 def holo_contour(img_org,
