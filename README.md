@@ -7,7 +7,7 @@ This project provides a pipeline for segmenting holographic particle images usin
 ## 🚀 Features
 
 - Contour-based object detection with:
-  - Median filtering
+  - Intensity filtering
   - Histogram matching (optional)
   - Region growing from intensity minima
 - Optional plot saving of initial vs. refined masks
@@ -21,12 +21,31 @@ This project provides a pipeline for segmenting holographic particle images usin
 
 The figure below shows an example of the pipeline's segmentation output:
   
-![Segmentation Result](examples/sample.jpg)
+<p align="left">
+  <img src="examples/sample.jpg" alt="Segmentation Result" width="400"/>
+</p>
+
 
 - **Red dashed**: Initial region estimate
 - **Blue solid**: Refined segmentation contour
 
 ---
 
-## 📂 Directory Structure
+## ⚙️ Usage
+
+### 1. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+
+python main.py --config configs/sample_config.yaml --input path/to/your/data
+
+
+
+---
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+
 
