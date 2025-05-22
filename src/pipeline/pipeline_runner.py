@@ -1,13 +1,13 @@
 import os
 from morphocut.core import Pipeline, Call
 from morphocut.file import Find, Glob
-from morphocut.image import ImageReader, ImageProperties
-from image.safe_image_properties import SafeImageProperties
+from morphocut.image import ImageReader
+from src.image.safe_image_properties import SafeImageProperties
 from morphocut.stream import Progress
 from morphocut.str import Format
 from morphocut.contrib.ecotaxa import EcotaxaWriter
 from morphocut.contrib.zooprocess import CalculateZooProcessFeatures
-from contour.morpho_custom import HoloContourNode
+from src.contour.morpho_custom import HoloContourNode
 
 
 def process_to_ecotaxa(input_folder, output_name, contour_params, lat=None, lon=None, date=None, ext=".png"):

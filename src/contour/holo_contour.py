@@ -1,15 +1,12 @@
-from pathlib import Path
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
 from skimage import measure
 from skimage.draw import polygon2mask
-from skimage.exposure import match_histograms
-from image.structure_forest import generate_mask
-from image.contour import contour_mask_union, filter_contours_by_intensity
-from image.visual import plot_segmentation_result
-from image.region_growing import region_grow
-from image.processing import normalize, apply_histogram_matching, find_darkest_point
+from src.image.structure_forest import generate_mask
+from src.image.contour import contour_mask_union, filter_contours_by_intensity
+from src.image.visual import plot_segmentation_result
+from src.image.region_growing import region_grow
+from src.image.processing import apply_histogram_matching, find_darkest_point
 
 
 def holo_contour(img_org,

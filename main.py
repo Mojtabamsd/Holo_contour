@@ -1,7 +1,7 @@
 import argparse
 import yaml
 from pathlib import Path
-from pipeline.pipeline_runner import process_to_ecotaxa
+from src.pipeline.pipeline_runner import process_to_ecotaxa
 
 
 def load_yaml_config(config_path):
