@@ -1,8 +1,13 @@
-<p align="left">
-  <img src="assets/logo.png" alt="HoloContour" width="100"/>
-</p>
-<p align="left">A minimalist tool for holographic plankton image segmentation</p>
-
+<table align="center">
+  <tr>
+    <td width="120">
+      <img src="assets/logo.png" alt="HoloContour Logo" width="100"/>
+    </td>
+    <td>
+      <p>A minimalist tool for holographic plankton image segmentation.</p>
+    </td>
+  </tr>
+</table>
 
 
 # HoloContour
