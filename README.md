@@ -1,7 +1,6 @@
 <div style="display: flex; align-items: center; gap: 20px;">
   <img src="assets/logo.png" alt="HoloContour Logo" width="100"/>
   <div>
-    <p style="font-size: 18px; margin: 0;"><strong>HoloContour</strong></p>
     <p style="font-size: 14px; margin: 0;">A minimalist tool for holographic plankton image segmentation.</p>
   </div>
 </div>
