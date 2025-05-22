@@ -4,7 +4,7 @@ from PIL import Image
 import numpy as np
 
 
-def plot_segmentation_result(img_org, initial_contour, refined_contours, title="Final Segmentation Result"):
+def plot_segmentation_result(img_org, initial_contour, refined_contours, title="Segmentation Result"):
     """
     Plot the initial and refined contours on the original image,
     and return the plot as a NumPy array (RGB image).
