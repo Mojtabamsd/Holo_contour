@@ -15,8 +15,9 @@ def plot_segmentation_result(img_org, initial_contour, refined_contours, title="
     if initial_contour is not None:
         ax.plot(initial_contour[:, 1], initial_contour[:, 0], '--r', label='Initial')
 
-    for contour in refined_contours:
-        ax.plot(contour[:, 1], contour[:, 0], '-b', linewidth=2)
+    for i, contour in enumerate(refined_contours):
+        label = "Refined" if i == 0 else None
+        ax.plot(contour[:, 1], contour[:, 0], '-b', linewidth=2, label=label)
 
     ax.set_title(title)
     ax.legend()
