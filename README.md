@@ -1,4 +1,12 @@
-# 🧠 HoloContour Segmentation Pipeline
+<p align="left">
+  <img src="assets/logo.png" alt="HoloContour Logo" width="100"/> 
+</p>
+
+A minimalist tool for processing holographic plankton images and extracting refined contour-based segmentations.
+
+
+
+# HoloContour
 
 This project provides a pipeline for segmenting holographic particle images using a hybrid region-growing and contour refinement method. It integrates with the [MorphoCut](https://github.com/morphocut/morphocut) framework and exports outputs compatible with [EcoTaxa](https://ecotaxa.obs-vlfr.fr/).
 
@@ -34,7 +42,7 @@ python main.py --config configs/sample_config.yaml --input path/to/your/data
 The figure below shows an example of the pipeline's segmentation output:
   
 <p align="left">
-  <img src="examples/sample.jpg" alt="Segmentation Result" width="400"/>
+  <img src="assets/sample.jpg" alt="Segmentation Result" width="400"/>
 </p>
 
 
