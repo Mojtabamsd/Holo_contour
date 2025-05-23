@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from skimage import io, color, filters, measure
 from skimage.segmentation import active_contour
 from skimage.draw import polygon2mask
-from src.holo_contour.image.structure_forest import generate_mask
+from holocontour.image.structure_forest import generate_mask
 
 # --- Config ---
 # data_dir = r'D:\mojmas\files\Projects\Holo_contour\data\data1'
