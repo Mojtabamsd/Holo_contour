@@ -1,4 +1,4 @@
-.. image:: assets/logo.png
+.. image:: _static/logo.png
    :alt: holocontour logo
    :width: 300px
    :align: center
