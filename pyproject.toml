@@ -25,6 +25,8 @@ dependencies = [
 package-dir = {"" = "src"}
 packages = ["holo_contour"]
 
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.setuptools.package-data]
 "holo_contour" = ["configs/*.yaml", "data/*"]
