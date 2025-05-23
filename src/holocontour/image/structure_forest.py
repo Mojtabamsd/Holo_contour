@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 import numpy as np
 import cv2
@@ -9,6 +8,8 @@ from skimage.feature import canny
 from skimage.morphology import binary_closing, disk, remove_small_objects, convex_hull_image
 from skimage.measure import label, regionprops
 from scipy.ndimage import binary_fill_holes
+import importlib.resources as pkg_resources
+from holocontour import model
 
 
 def structured_forest_edges(gray_img, model_path):
@@ -97,15 +98,14 @@ def particle_sizer(code_dir, data_dir, im_format, save_dir, method_key, model_pa
 
 
 def generate_mask(img, use_convex_hull=False):
+    with pkg_resources.path(model, "model.yml") as model_path:
+        edges = structured_forest_edges(img, str(model_path))
 
-    model_path = r'src/holocontour/model/model.yml'
-
-    edges = structured_forest_edges(img, model_path)
     binary = edges > 0.05
-
     binary = remove_small_objects(binary, min_size=50)
 
     if use_convex_hull:
         binary = convex_hull_image(binary)
 
     return binary
+
