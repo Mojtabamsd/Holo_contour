@@ -27,18 +27,6 @@ This repository provides a pipeline for segmenting holographic particle images u
 
 ---
 
-## ⚙️ Usage
-
-### 1. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-
-python main.py --config configs/sample_config.yaml --input path/to/your/data
-```
-
----
-
 ## 🖼 Example
 
 The figure below shows an example of the pipeline's segmentation output:
