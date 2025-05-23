@@ -17,8 +17,7 @@ dependencies = [
     "matplotlib",
     "scikit-image",
     "pyyaml",
-    "tqdm",
-    "morphocut"
+    "tqdm"
 ]
 
 [tool.setuptools]
