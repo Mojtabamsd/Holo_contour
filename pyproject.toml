@@ -16,9 +16,9 @@ dependencies = [
     "opencv-python",
     "matplotlib",
     "scikit-image",
-    "morphocut",
     "pyyaml",
-    "tqdm"
+    "tqdm",
+    "morphocut @ git+https://github.com/morphocut/morphocut.git"
 ]
 
 [tool.setuptools]
