@@ -1,5 +1,5 @@
 <div style="display: flex; align-items: center; gap: 20px;">
-  <img src="assets/logo.png" alt="HoloContour Logo" width="100"/>
+  <img src="docs/source/assets/logo.png" alt="HoloContour Logo" width="100"/>
 </div>
 
 
@@ -29,7 +29,7 @@ Holocontour is a small but capable toolkit that turns raw in‑line digital holo
 The figure below shows an example of the pipeline's segmentation output:
   
 <p align="left">
-  <img src="assets/sample.jpg" alt="Segmentation Result" width="400"/>
+  <img src="docs/source/assets/sample.jpg" alt="Segmentation Result" width="400"/>
 </p>
 
 

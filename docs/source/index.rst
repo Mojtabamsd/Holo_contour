@@ -1,17 +1,22 @@
-.. holocontour documentation master file
+.. image:: assets/logo.png
+   :alt: HoloContour Logo
+   :width: 120px
+   :align: center
 
-Welcome to holocontour's documentation!
-=======================================
-
-A minimalist toolkit for holographic plankton image segmentation.
-
-Contents
---------
+====================================
+Welcome to HoloContour's documentation!
+====================================
 
 .. toctree::
    :maxdepth: 2
-   :caption: Documentation
+   :caption: Contents:
 
+   install
    usage
-   api
-   installation
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
