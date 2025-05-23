@@ -5,3 +5,7 @@ __pycache__/
 .idea/
 *.zip
 output/
+docs/build/
+docs/.doctrees/
+docs/.DS_Store
+
