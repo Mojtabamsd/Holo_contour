@@ -18,7 +18,7 @@ dependencies = [
     "scikit-image",
     "pyyaml",
     "tqdm",
-    "morphocut @ git+https://github.com/morphocut/morphocut.git"
+    "morphocut"
 ]
 
 [tool.setuptools]
