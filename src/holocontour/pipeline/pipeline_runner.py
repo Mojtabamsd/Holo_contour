@@ -10,7 +10,7 @@ from morphocut.contrib.zooprocess import CalculateZooProcessFeatures
 from holocontour.contour.morpho_custom import HoloContourNode
 
 
-def process_to_ecotaxa(input_folder, output_name, contour_params, lat=None, lon=None, date=None, ext=".png"):
+def pipeline_run(input_folder, output_name, contour_params, lat=None, lon=None, date=None, ext=".png"):
     output_dir = os.path.join(input_folder, "output")
     os.makedirs(output_dir, exist_ok=True)
 

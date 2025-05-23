@@ -1,7 +1,7 @@
 import argparse
 import yaml
 from pathlib import Path
-from holocontour.pipeline.pipeline_runner import process_to_ecotaxa
+from holocontour.pipeline.pipeline_runner import pipeline_run
 
 
 def load_yaml_config(config_path):
@@ -24,7 +24,7 @@ if __name__ == "__main__":
     contour_params = config.get("contour", {})
     metadata = config.get("input_metadata", {})
 
-    process_to_ecotaxa(
+    pipeline_run(
         input_folder=input_folder,
         output_name=output_name,
         contour_params=contour_params,
