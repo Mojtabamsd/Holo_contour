@@ -98,7 +98,7 @@ def particle_sizer(code_dir, data_dir, im_format, save_dir, method_key, model_pa
 
 def generate_mask(img, use_convex_hull=False):
 
-    model_path = r'src/holo_contour/model/model.yml'
+    model_path = r'src/holocontour/model/model.yml'
 
     edges = structured_forest_edges(img, model_path)
     binary = edges > 0.05

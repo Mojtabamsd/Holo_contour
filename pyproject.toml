@@ -13,7 +13,7 @@ readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
     "numpy",
-    "opencv-python",
+    "opencv-contrib-python",
     "matplotlib",
     "scikit-image",
     "pyyaml",
