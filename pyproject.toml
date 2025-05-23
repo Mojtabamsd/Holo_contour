@@ -28,4 +28,5 @@ package-dir = {"" = "src"}
 where = ["src"]
 
 [tool.setuptools.package-data]
-"holo_contour" = ["configs/*.yaml", "data/*"]
+"holocontour" = ["configs/*.yaml", "data/*", "model/model.yml"]
+
