@@ -1,9 +1,17 @@
-# HoloContour
+.. holocontour documentation master file
 
-Welcome to the documentation for HoloContour!
+Welcome to holocontour's documentation!
+=======================================
 
-## Contents
+A minimalist toolkit for holographic plankton image segmentation.
 
-- [Installation](install.md)
-- [Usage](usage.md)
-- [API Reference](api.md)
+Contents
+--------
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Documentation
+
+   usage
+   api
+   installation
