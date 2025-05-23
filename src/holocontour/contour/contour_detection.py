@@ -3,7 +3,7 @@ import numpy as np
 from skimage import measure
 from skimage.draw import polygon2mask
 from holocontour.image.structure_forest import generate_mask
-from holocontour.image.contour import contour_mask_union, filter_contours_by_intensity
+from holocontour.contour.toolsbox import contour_mask_union, filter_contours_by_intensity
 from holocontour.image.visual import plot_segmentation_result
 from holocontour.image.region_growing import region_grow
 from holocontour.image.processing import apply_histogram_matching, find_darkest_point
