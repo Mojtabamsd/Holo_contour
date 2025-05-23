@@ -1,5 +1,5 @@
 from morphocut import Node, Output, ReturnOutputs
-from src.holo_contour.contour.holo_contour import holo_contour
+from holocontour.contour.contour_detection import find_contours
 
 @ReturnOutputs
 class HoloContourNode(Node):
@@ -13,4 +13,4 @@ class HoloContourNode(Node):
         self.contour_params = contour_params
 
     def transform(self, img):
-        return holo_contour(img, **self.contour_params)
+        return find_contours(img, **self.contour_params)
