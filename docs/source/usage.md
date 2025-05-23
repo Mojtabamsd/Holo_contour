@@ -6,6 +6,28 @@ import yaml
 
 with open("path/to/sample_config.yaml") as f:
     config = yaml.safe_load(f)
+    
+
+# or define the configuration inline
+
+contour_params = {
+    "avg_thresh": 63,
+    "min_contour_area": 30,
+    "seed_thresh": 45,
+    "save_plot": True,
+    "median": False,
+    "hist_match": False,
+    "ref_path": None
+}
+
+metadata = {
+    "lat": None,
+    "lon": None,
+    "date": None,
+    "ext": ".png"
+}
+
+
 
 pipeline_run(
     input_folder="path/to/images",
