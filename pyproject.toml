@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "holo-contour"
+name = "holocontour"
 version = "0.1.0"
 description = "A minimalist toolkit for holographic plankton image segmentation"
 authors = [
