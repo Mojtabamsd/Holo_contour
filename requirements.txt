@@ -4,6 +4,10 @@ scikit-image
 numpy
 matplotlib
 pyyaml
+sphinx
+myst-parser
+sphinx-rtd-theme
+
 
 # Latest MorphoCut
 git+https://github.com/morphocut/morphocut.git
