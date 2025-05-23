@@ -5,7 +5,7 @@ numpy
 matplotlib
 pyyaml
 sphinx
-myst-parser
+myst-parser>=0.18
 sphinx-rtd-theme
 
 
