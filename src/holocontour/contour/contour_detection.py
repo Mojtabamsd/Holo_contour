@@ -26,42 +26,48 @@ def find_contours(img_org,
     img = cv2.medianBlur(img, 5)
     init_mask = generate_mask(img)
 
-    seed = find_darkest_point(img_org, init_mask > 0)
-    seg_mask = region_grow(img, seed)
+    if np.count_nonzero(init_mask) == 0:
+        print("[WARNING] Empty init_mask — skipping image.")
+        return np.zeros_like(img_org, dtype=bool), img_org
 
-    contours = measure.find_contours(seg_mask, 0.5)
-    filtered_contours = [c for c in contours if len(c) > min_contour_area]
-
-    while True:
-        outside = np.where((img < seed_thresh) & ~seg_mask)
-        if len(outside[0]) == 0:
-            break
-        seed = (outside[0][0], outside[1][0])
-        new_mask = region_grow(img, seed)
-        seg_mask |= new_mask
-        new_contours = measure.find_contours(new_mask, 0.5)
-        filtered_contours += [c for c in new_contours if len(c) > min_contour_area]
-
-    valid_contours = filter_contours_by_intensity(
-        filtered_contours, img_org, avg_thresh, median
-    )
-
-    union = contour_mask_union(valid_contours, img_org.shape)
-    outer = max(measure.find_contours(init_mask, 0.5), key=len)
-    init_mask_poly = polygon2mask(img_org.shape[:2], outer)
-    union &= init_mask_poly
-
-    final_mask = np.zeros_like(init_mask, dtype=np.uint8)
-    final_contour = []
-    for contour in measure.find_contours(union, 0.5):
-        if len(contour) > min_contour_area:
-            mask = polygon2mask(img_org.shape[:2], contour).astype(np.uint8)
-            final_mask += mask
-            final_contour.append(contour)
-
-    if save_plot:
-        plot = plot_segmentation_result(img_org, outer, final_contour)
     else:
-        plot = None
 
-    return final_mask > 0, plot
+        seed = find_darkest_point(img_org, init_mask > 0)
+        seg_mask = region_grow(img, seed)
+
+        contours = measure.find_contours(seg_mask, 0.5)
+        filtered_contours = [c for c in contours if len(c) > min_contour_area]
+
+        while True:
+            outside = np.where((img < seed_thresh) & ~seg_mask)
+            if len(outside[0]) == 0:
+                break
+            seed = (outside[0][0], outside[1][0])
+            new_mask = region_grow(img, seed)
+            seg_mask |= new_mask
+            new_contours = measure.find_contours(new_mask, 0.5)
+            filtered_contours += [c for c in new_contours if len(c) > min_contour_area]
+
+        valid_contours = filter_contours_by_intensity(
+            filtered_contours, img_org, avg_thresh, median
+        )
+
+        union = contour_mask_union(valid_contours, img_org.shape)
+        outer = max(measure.find_contours(init_mask, 0.5), key=len)
+        init_mask_poly = polygon2mask(img_org.shape[:2], outer)
+        union &= init_mask_poly
+
+        final_mask = np.zeros_like(init_mask, dtype=np.uint8)
+        final_contour = []
+        for contour in measure.find_contours(union, 0.5):
+            if len(contour) > min_contour_area:
+                mask = polygon2mask(img_org.shape[:2], contour).astype(np.uint8)
+                final_mask += mask
+                final_contour.append(contour)
+
+        if save_plot:
+            plot = plot_segmentation_result(img_org, outer, final_contour)
+        else:
+            plot = None
+
+        return final_mask > 0, plot
