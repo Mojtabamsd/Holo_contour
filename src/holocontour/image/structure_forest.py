@@ -97,11 +97,13 @@ def particle_sizer(code_dir, data_dir, im_format, save_dir, method_key, model_pa
             print(f"{img_path.name} → {props}")
 
 
-def generate_mask(img, use_convex_hull=False):
-    with pkg_resources.path(model, "model.yml") as model_path:
-        edges = structured_forest_edges(img, str(model_path))
+def generate_mask(img, edge='structured_forest', use_convex_hull=False):
 
-    binary = edges > 0.05
+    if edge == 'structured_forest': #TODO
+        with pkg_resources.path(model, "model.yml") as model_path:
+            edges = structured_forest_edges(img, str(model_path))
+            binary = edges > 0.05
+
     binary = remove_small_objects(binary, min_size=50)
 
     if use_convex_hull:
