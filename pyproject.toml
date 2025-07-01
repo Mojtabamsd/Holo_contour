@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "holocontour"
-version = "0.1.1"
+version = "0.1.3"
 description = "A minimalist toolkit for holographic plankton image segmentation"
 authors = [
     { name = "Mojtaba Masoudi", email = "mojmas@noc.ac.uk" }
