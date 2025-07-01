@@ -11,13 +11,15 @@ with open("path/to/sample_config.yaml") as f:
 # or define the configuration inline
 
 contour_params = {
-    "avg_thresh": 63,
+    "avg_thresh": 81,
+    "max_attempts": 5,
+    "increase_avg": 5,
     "min_contour_area": 30,
     "seed_thresh": 45,
     "save_plot": True,
     "median": False,
-    "hist_match": False,
-    "ref_path": None
+    "hist_match": True,
+    "ref_path": 'src\holocontour\data\001-4923.pgm(406,428)-Z43.50.png'
 }
 
 metadata = {
