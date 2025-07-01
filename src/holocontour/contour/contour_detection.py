@@ -56,6 +56,8 @@ def process_mask(img_org,
 
 def find_contours(img_org,
                  avg_thresh=81,
+                 max_attempts=5,
+                 increase_avg=5,
                  min_contour_area=30,
                  seed_thresh=45,
                  save_plot=False,
@@ -76,7 +78,6 @@ def find_contours(img_org,
         return np.zeros_like(img_org, dtype=bool), img_org
 
     # Attempt up to max_attempts times with increasing avg_thresh
-    max_attempts = 5
     attempt = 0
 
     while attempt < max_attempts:
@@ -98,7 +99,7 @@ def find_contours(img_org,
             return final_mask > 0, plot
         else:
             attempt += 1
-            avg_thresh += 5
+            avg_thresh += increase_avg
             print(f"[INFO] Final mask empty — increasing avg_thresh to {avg_thresh} (attempt {attempt}/{max_attempts})")
 
     print("[WARNING] All attempts failed — returning initial mask.")
