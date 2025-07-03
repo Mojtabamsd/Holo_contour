@@ -10,8 +10,11 @@ Welcome to holocontour's documentation!
 It couples intensity‑driven region growing with a contour‑refinement step, and wraps everything in a reproducible, YAML‑configurable pipeline built on top of `MorphoCut <https://github.com/morphocut/morphocut>`_.
 Outputs ship in an archive ready for direct upload to `EcoTaxa <https://ecotaxa.obs-vlfr.fr/>`_.
 
-Contents
---------
+---
+
+### Contents
+
+Below are the main sections of the documentation:
 
 .. toctree::
    :maxdepth: 2
@@ -22,12 +25,16 @@ Contents
    hyperparameters
 
 .. toctree::
-   :hidden:
+   :maxdepth: 2
+   :caption: Advanced Topics
 
    API Reference <api>
 
-Indices and tables
-==================
+---
+
+### Indices and Tables
+
+For quick navigation, use the following indices:
 
 * :ref:`genindex`
 * :ref:`modindex`
