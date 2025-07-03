@@ -19,6 +19,7 @@ Contents
 
    install
    usage
+   hyperparameters
 
 .. toctree::
    :hidden:
