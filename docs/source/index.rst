@@ -15,7 +15,6 @@ Contents
 
 .. toctree::
    :maxdepth: 2
-   :caption: Get Started
 
    install
    usage
@@ -25,10 +24,3 @@ Contents
    :hidden:
 
    API Reference <api>
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
