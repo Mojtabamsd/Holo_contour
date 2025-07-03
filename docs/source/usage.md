@@ -1,3 +1,5 @@
+### Usage
+
 You can run the segmentation pipeline with:
 
 ```python

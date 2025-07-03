@@ -1,3 +1,5 @@
+### Install
+
 You can install holocontour using pip:
 
 ```bash
